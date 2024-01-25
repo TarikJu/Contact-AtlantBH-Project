@@ -1,0 +1,550 @@
+{
+	"info": {
+		"_postman_id": "a473b0d2-b1c4-401a-823e-0eb74d994de2",
+		"name": "Contact List",
+		"description": "This is the API for the Contact List App: \nhttps://thinking-tester-contact-list.herokuapp.com/",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32554299"
+	},
+	"item": [
+		{
+			"name": "Happy Path",
+			"item": [
+				{
+					"name": "Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response_body = pm.response.json()",
+									"pm.collectionVariables.set(\"token\", response_body.token)",
+									"pm.collectionVariables.set(\"user_id\", response_body.user._id)",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('The `firstName` is correct', function () {",
+									"    pm.expect(response_body.user.firstName).to.eql(pm.collectionVariables.get(\"first_name\")); ",
+									"});",
+									"",
+									"pm.test('The `lastName` is correct', function () {",
+									"    pm.expect(response_body.user.lastName).to.eql(pm.collectionVariables.get(\"last_name\")); ",
+									"});",
+									"",
+									"pm.test('The `email` is correct', function () {",
+									"    pm.expect(response_body.user.email).to.eql(pm.collectionVariables.get(\"email\")); ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"first_name\", pm.variables.replaceIn(\"{{$randomFirstName}}\"))",
+									"pm.collectionVariables.set(\"last_name\", pm.variables.replaceIn(\"{{$randomLastName}}\"))",
+									"pm.collectionVariables.set(\"email\", (pm.variables.replaceIn(\"{{$randomEmail}}\").toLowerCase()))",
+									"pm.collectionVariables.set(\"password\", pm.variables.replaceIn(\"{{$randomPassword}}\"))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"{{first_name}}\",\n    \"lastName\": \"{{last_name}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://thinking-tester-contact-list.herokuapp.com/users",
+							"protocol": "https",
+							"host": [
+								"thinking-tester-contact-list",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LogIn",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response_body = pm.response.json()",
+									"pm.collectionVariables.set(\"token\", response_body.token)",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('The `_id` is correct', function () {",
+									"    pm.expect(response_body.user._id).to.eql(pm.collectionVariables.get(\"user_id\")); ",
+									"});",
+									"",
+									"pm.test('The `firstName` is correct', function () {",
+									"    pm.expect(response_body.user.firstName).to.eql(pm.collectionVariables.get(\"first_name\")); ",
+									"});",
+									"",
+									"pm.test('The `lastName` is correct', function () {",
+									"    pm.expect(response_body.user.lastName).to.eql(pm.collectionVariables.get(\"last_name\")); ",
+									"});",
+									"",
+									"pm.test('The `email` is correct', function () {",
+									"    pm.expect(response_body.user.email).to.eql(pm.collectionVariables.get(\"email\")); ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://thinking-tester-contact-list.herokuapp.com/users/login",
+							"protocol": "https",
+							"host": [
+								"thinking-tester-contact-list",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response_body = pm.response.json()",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('The `_id` is correct', function () {",
+									"    pm.expect(response_body._id).to.eql(pm.collectionVariables.get(\"user_id\")); ",
+									"});",
+									"",
+									"pm.test('The `firstName` is correct', function () {",
+									"    pm.expect(response_body.firstName).to.eql(pm.collectionVariables.get(\"first_name\")); ",
+									"});",
+									"",
+									"pm.test('The `lastName` is correct', function () {",
+									"    pm.expect(response_body.lastName).to.eql(pm.collectionVariables.get(\"last_name\")); ",
+									"});",
+									"",
+									"pm.test('The `email` is correct', function () {",
+									"    pm.expect(response_body.email).to.eql(pm.collectionVariables.get(\"email\")); ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://thinking-tester-contact-list.herokuapp.com/users/me",
+							"protocol": "https",
+							"host": [
+								"thinking-tester-contact-list",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "The GET User Profile operation is not available through the UI."
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response_body = pm.response.json()",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('The `_id` is correct', function () {",
+									"    pm.expect(response_body._id).to.eql(pm.collectionVariables.get(\"user_id\")); ",
+									"});",
+									"",
+									"pm.test('The `firstName` is correct', function () {",
+									"    pm.expect(response_body.firstName).to.eql(\"new_profile_data\"+pm.collectionVariables.get(\"first_name\")); ",
+									"});",
+									"",
+									"pm.test('The `lastName` is correct', function () {",
+									"    pm.expect(response_body.lastName).to.eql(\"new_profile_data\"+pm.collectionVariables.get(\"last_name\")); ",
+									"});",
+									"",
+									"pm.test('The `email` is correct', function () {",
+									"    pm.expect(response_body.email).to.eql(\"new_profile_data\"+pm.collectionVariables.get(\"email\")); ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"new_profile_data{{first_name}}\",\n    \"lastName\": \"new_profile_data{{last_name}}\",\n    \"email\": \"new_profile_data{{email}}\",\n    \"password\": \"new_profile_data{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://thinking-tester-contact-list.herokuapp.com/users/me",
+							"protocol": "https",
+							"host": [
+								"thinking-tester-contact-list",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "The PATCH Update User operation is not available through the UI."
+					},
+					"response": []
+				},
+				{
+					"name": "Log Out User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://thinking-tester-contact-list.herokuapp.com/users/logout",
+							"protocol": "https",
+							"host": [
+								"thinking-tester-contact-list",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log In User using updated info",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response_body = pm.response.json()",
+									"pm.collectionVariables.set(\"token\", response_body.token)",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('The `_id` is correct', function () {",
+									"    pm.expect(response_body.user._id).to.eql(pm.collectionVariables.get(\"user_id\")); ",
+									"});",
+									"",
+									"pm.test('The `firstName` is correct', function () {",
+									"    pm.expect(response_body.user.firstName).to.eql(\"updated\"+pm.collectionVariables.get(\"first_name\")); ",
+									"});",
+									"",
+									"pm.test('The `lastName` is correct', function () {",
+									"    pm.expect(response_body.user.lastName).to.eql(\"updated\"+pm.collectionVariables.get(\"last_name\")); ",
+									"});",
+									"",
+									"pm.test('The `email` is correct', function () {",
+									"    pm.expect(response_body.user.email).to.eql(\"updated\"+pm.collectionVariables.get(\"email\")); ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"updated{{email}}\",\n    \"password\": \"updated{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://thinking-tester-contact-list.herokuapp.com/users/login",
+							"protocol": "https",
+							"host": [
+								"thinking-tester-contact-list",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://thinking-tester-contact-list.herokuapp.com/users/me",
+							"protocol": "https",
+							"host": [
+								"thinking-tester-contact-list",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "The DELETE User operation is not available through the UI."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		},
+		{
+			"key": "first_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "last_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "contact_first_name",
+			"value": ""
+		},
+		{
+			"key": "contact_last_name",
+			"value": ""
+		},
+		{
+			"key": "contact_email",
+			"value": ""
+		},
+		{
+			"key": "contact_street1",
+			"value": ""
+		},
+		{
+			"key": "contact_street2",
+			"value": ""
+		},
+		{
+			"key": "contact_city",
+			"value": ""
+		},
+		{
+			"key": "contact_country",
+			"value": ""
+		},
+		{
+			"key": "contact_state_province",
+			"value": ""
+		},
+		{
+			"key": "contact_postal_code",
+			"value": ""
+		},
+		{
+			"key": "contact_phone_number",
+			"value": ""
+		},
+		{
+			"key": "contact_id",
+			"value": ""
+		}
+	]
+}
